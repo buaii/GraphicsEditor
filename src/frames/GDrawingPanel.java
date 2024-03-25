@@ -1,81 +1,94 @@
 package frames;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import shapeTools.GShapeTool;
+import shapeTools.GShape;
 
 public class GDrawingPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	private GShapeTool shapeTool;
-	
+	private GShape gShape;
+	private ArrayList<GShape> gShapeList;
 	public GDrawingPanel() {
-		this.setBackground(Color.gray);
 		MouseEventHandler mouseEventHandler = new MouseEventHandler();
 		this.addMouseListener(mouseEventHandler);
 		this.addMouseMotionListener(mouseEventHandler);
+		this.gShapeList = new ArrayList<>();
 	}
 	
-	public void paint(Graphics graphics) {
+	public void paint(Graphics graphics) {	
+		if (!gShapeList.isEmpty()) {
+			for (GShape g : gShapeList) {
+				g.draw(graphics);
+			}
+		}
 		
 	}
 	
-	public void setShapeTool(GShapeTool shapeTool) {
-		this.shapeTool = shapeTool;		
+	public void setShapeTool(GShape shapeTool) {
+		this.gShape = shapeTool;		
 	}
 	
-	private void draw(int x, int y) {
-		if (shapeTool != null) {
-			this.shapeTool.draw(getGraphics(), x, y, 20, 20);
+	private void draw() {
+		Graphics graphics = this.getGraphics();
+		if (gShape != null) {
+			if (!gShapeList.isEmpty()) {
+				for (GShape g : gShapeList) {
+					g.draw(graphics);
+				}
+			}
+			
+			this.gShape.draw(getGraphics());
 		}
 		
 		
+	}
+	
+	private void move() {
+	}
+	
+	public void addShape() {
+		if (gShape != null)
+			this.gShapeList.add(this.gShape.getShape());
 	}
 	
 	private class MouseEventHandler implements MouseListener, MouseMotionListener {		
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
-		}
-		
-		@Override
 		public void mousePressed(MouseEvent e) {
-			draw(e.getX(), e.getY());
-			System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
+			if (gShape != null)
+				gShape.setP1(e.getX(), e.getY());
 		}
 
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
-		}
-		
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			draw(e.getX(), e.getY());
-			draw(e.getX(), e.getY()); 
-			System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
-		}
-
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
+			if (gShape != null) {
+				gShape.drawing(getGraphics());
+				gShape.setP2(e.getX(), e.getY());
+			}
+			
 		}
 		
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			addShape();
+		}
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {}
 
 		@Override
-		public void mouseEntered(MouseEvent e) {
-			System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
-		}
+		public void mouseMoved(MouseEvent e) {}
 
 		@Override
-		public void mouseExited(MouseEvent e) {
-			System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
-		}
+		public void mouseEntered(MouseEvent e) {}
+
+		@Override
+		public void mouseExited(MouseEvent e) {}
 		
 	}	
   

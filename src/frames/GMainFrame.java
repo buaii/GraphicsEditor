@@ -18,7 +18,7 @@ public class GMainFrame extends JFrame {
 	// constructor
 	public GMainFrame() {
 		this.setSize(600, 800);
-		
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		LayoutManager layoutManager = new FlowLayout();
 //		LayoutManager layoutManager = new CardLayout();
 //		LayoutManager layoutManager = new BorderLayout();
