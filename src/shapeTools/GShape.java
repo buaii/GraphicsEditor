@@ -3,7 +3,7 @@ import java.awt.Graphics;
 
 public abstract class GShape {
 	protected int x1, y1, x2, y2, ox2, oy2;
-	
+
 	public GShape() {
 		this.x1 = 0;
 		this.y1 = 0;
@@ -29,9 +29,14 @@ public abstract class GShape {
 		this.y2 = y2;
 	}
 	
-	public abstract void drawing(Graphics g);
+	public abstract void drag(Graphics g);
 	public abstract void draw(Graphics g);	
-	public abstract GShape getShape();
+	public abstract GShape clone();
+
+	public abstract void setDrawing(boolean bool);
+	public abstract boolean isDrawing(int x, int y);
+	public abstract void addPoint(int x, int y);
+	
 	
 	
 }
