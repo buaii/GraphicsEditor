@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 public class GLine extends GShape {
 	
 	public GLine() {
+		super(EDrawingStyle.e2PStyle);
 	}
 	
 	public GLine(int x1, int y1, int x2, int y2) {

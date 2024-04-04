@@ -9,6 +9,7 @@ public class GPolygon extends GShape {
 	private int vertex = 1;
 	
 	public GPolygon() {
+		super(EDrawingStyle.eNPStyle);
 	}
 	public GPolygon(int[] arrX, int[] arrY, int vertex) {
 		this.arrX = arrX;

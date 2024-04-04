@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 public class GOval extends GShape {
 	
 	public GOval() {
+		super(EDrawingStyle.e2PStyle);
 	}
 	
 	public GOval(int x1, int y1, int x2, int y2) {

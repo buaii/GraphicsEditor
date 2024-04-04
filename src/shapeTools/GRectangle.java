@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 public class GRectangle extends GShape {
 	
 	public GRectangle() {
+		super(EDrawingStyle.e2PStyle);
 	}
 	public GRectangle(int x1, int y1, int x2, int y2) {
 		this.x1 = x1;
@@ -28,7 +29,6 @@ public class GRectangle extends GShape {
 	@Override
 	public void draw(Graphics g) {
 		g.drawRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2-x1), Math.abs(y2-y1));
-		
 	}
 	
 	@Override
@@ -51,3 +51,4 @@ public class GRectangle extends GShape {
 		
 	}
 }
+
