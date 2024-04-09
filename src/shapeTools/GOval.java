@@ -3,17 +3,14 @@ package shapeTools;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-public class GOval extends GShape {
+public class GOval extends G2PShape {
 	
 	public GOval() {
 		super(EDrawingStyle.e2PStyle);
 	}
 	
 	public GOval(int x1, int y1, int x2, int y2) {
-		this.x1 = x1;
-		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
+		super(x1, y1, x2, y2);
 	}
 
 	@Override
@@ -32,30 +29,9 @@ public class GOval extends GShape {
 		g.drawOval(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2-x1), Math.abs(y2-y1));
 	}
 
-
-
-
 	@Override
 	public GShape clone() {
 		return new GOval(this.x1, this.y1, this.x2, this.y2);
-	}
-
-	@Override
-	public void setDrawing(boolean bool) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isDrawing(int x, int y) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void addPoint(int x, int y) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

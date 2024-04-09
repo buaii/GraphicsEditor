@@ -22,5 +22,8 @@ public class Constants {
 		
 		public String getText() { return this.text; }
 		public GShape getShapeTool() { return this.shapeTool; }
+		
 	}
+
+	public static final int NUM_POINTS = 20;
 }

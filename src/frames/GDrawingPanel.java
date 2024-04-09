@@ -19,6 +19,7 @@ public class GDrawingPanel extends JPanel {
 		eNPState
 	} 
 	private EDrawingState eDrawingState;
+	
 	private Vector<GShape> shapes;
 	private GShape shapeTool;
 	private GShape currentShape;
@@ -47,21 +48,25 @@ public class GDrawingPanel extends JPanel {
 	
 	private void startDrawing(int x, int y) {
 		currentShape = shapeTool.clone();
-		currentShape.setP1(x, y);
+		currentShape.setOrigin(x, y);
 	}
 	
 	private void keepDrawing(int x, int y) {
-		currentShape.setP2(x, y);
+		currentShape.movePoint(x, y);
 		currentShape.drag(getGraphics());
 	}
 	
+	private void continueDrawing(int x, int y) {
+		currentShape.addPoint(x, y);
+	}
+	
 	private void stopDrawing(int x, int y) {
-		currentShape.setP2(x, y);
+		currentShape.addPoint(x, y);
+		currentShape.draw(getGraphics());
 		shapes.add(currentShape.clone());
 	}
 	
 	private class MouseEventHandler implements MouseListener, MouseMotionListener {		
-		private long lastClickTime = 0;
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (eDrawingState == EDrawingState.eIdle) {
@@ -77,6 +82,7 @@ public class GDrawingPanel extends JPanel {
 		public void mouseDragged(MouseEvent e) {
 			if (eDrawingState == EDrawingState.e2PState) {
 				keepDrawing(e.getX(), e.getY());
+				eDrawingState = EDrawingState.e2PState;
 			}
 			
 		}
@@ -91,38 +97,30 @@ public class GDrawingPanel extends JPanel {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			long clickTime = System.currentTimeMillis();
-            
-			if (eDrawingState == EDrawingState.eNPState) {
-				// 더블클릭 이벤트 처리를 위한 로직
-				if (clickTime - lastClickTime <= 300) {
-					currentShape.addPoint(e.getX(), e.getY());	
-	            	shapes.set(shapes.size()-1, currentShape);
-	            	shapes.get(shapes.size()-1).draw(getGraphics());
-	            	eDrawingState = EDrawingState.eIdle;
-	            } else {
-	            	// 일반 클릭
-	            	currentShape.addPoint(e.getX(), e.getY());	
-	            	shapes.set(shapes.size()-1, currentShape);
-	            	currentShape.setP(e.getX(), e.getY());
-	            }
-			} else if (eDrawingState == EDrawingState.eIdle) {
-				if (shapeTool != null 
-						&& shapeTool.getEDrawingStyle() == EDrawingStyle.eNPStyle) {
-					currentShape = shapeTool.clone();
-					shapes.add(currentShape);
-					currentShape.setP1(e.getX(), e.getY());
-					eDrawingState = EDrawingState.eNPState;
+			if (shapeTool != null
+					&& shapeTool.getEDrawingStyle() == EDrawingStyle.eNPStyle) {
+				if (e.getClickCount() == 1) {
+					if (eDrawingState == EDrawingState.eIdle) {
+						startDrawing(e.getX(), e.getY());
+						eDrawingState = EDrawingState.eNPState;
+					} else if (eDrawingState == EDrawingState.eNPState) {
+						continueDrawing(e.getX(), e.getY());
+		            	eDrawingState = EDrawingState.eNPState;
+					}
+				} else if (e.getClickCount() == 2) {
+					if (eDrawingState == EDrawingState.eNPState) {
+						stopDrawing(e.getX(), e.getY());
+		            	eDrawingState = EDrawingState.eIdle;
+					}
 				}
 			}
-			lastClickTime = clickTime;
 		}
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			if (eDrawingState == EDrawingState.eNPState) {
-				currentShape.setP2(e.getX(), e.getY());
-				currentShape.drag(getGraphics());
+				keepDrawing(e.getX(), e.getY());
+				eDrawingState = EDrawingState.eNPState;
 			}
 		}
 

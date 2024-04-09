@@ -2,17 +2,13 @@ package shapeTools;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-
-public class GRectangle extends GShape {
+public class GRectangle extends G2PShape {
 	
 	public GRectangle() {
 		super(EDrawingStyle.e2PStyle);
 	}
 	public GRectangle(int x1, int y1, int x2, int y2) {
-		this.x1 = x1;
-		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
+		super(x1, y1, x2, y2);
 	}
 	
 	@Override
@@ -35,20 +31,6 @@ public class GRectangle extends GShape {
 	public GRectangle clone() {
 		return new GRectangle(this.x1, this.y1, this.x2, this.y2);
 	}
-	@Override
-	public void setDrawing(boolean bool) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public boolean isDrawing(int x, int y) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	@Override
-	public void addPoint(int x, int y) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }
 

@@ -3,17 +3,14 @@ package shapeTools;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-public class GLine extends GShape {
+public class GLine extends G2PShape {
 	
 	public GLine() {
 		super(EDrawingStyle.e2PStyle);
 	}
 	
 	public GLine(int x1, int y1, int x2, int y2) {
-		this.x1 = x1;
-		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
+		super(x1, y1, x2, y2);
 	}
 
 	@Override
@@ -32,24 +29,9 @@ public class GLine extends GShape {
 		g.drawLine(x1, y1, x2, y2);
 	}
 
-
-
-
 	@Override
 	public GShape clone() {
 		return new GLine(this.x1, this.y1, this.x2, this.y2);
-	}
-
-	@Override
-	public void setDrawing(boolean bool) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isDrawing(int x, int y) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
