@@ -33,6 +33,10 @@ public class GDrawingPanel extends JPanel {
 		this.shapes = new Vector<GShape>();
 	}
 	
+	public void initialize() {
+		
+	}	
+	
 	public void paint(Graphics graphics) {	
 		if (!shapes.isEmpty()) {
 			for (GShape g : shapes) {
@@ -70,8 +74,7 @@ public class GDrawingPanel extends JPanel {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (eDrawingState == EDrawingState.eIdle) {
-				if (shapeTool != null 
-						&& shapeTool.getEDrawingStyle() == EDrawingStyle.e2PStyle) {
+				if (shapeTool.getEDrawingStyle() == EDrawingStyle.e2PStyle) {
 					startDrawing(e.getX(), e.getY());
 					eDrawingState = EDrawingState.e2PState;
 				}
@@ -97,8 +100,7 @@ public class GDrawingPanel extends JPanel {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (shapeTool != null
-					&& shapeTool.getEDrawingStyle() == EDrawingStyle.eNPStyle) {
+			if (shapeTool.getEDrawingStyle() == EDrawingStyle.eNPStyle) {
 				if (e.getClickCount() == 1) {
 					if (eDrawingState == EDrawingState.eIdle) {
 						startDrawing(e.getX(), e.getY());
@@ -130,6 +132,5 @@ public class GDrawingPanel extends JPanel {
 		@Override
 		public void mouseExited(MouseEvent e) {}
 		
-	}	
-  
+	}  
 }

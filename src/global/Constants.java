@@ -8,20 +8,23 @@ import shapeTools.GShape;
 
 public class Constants {
 	public enum EShapeButtons {
-		eRectangle("rectangle", new GRectangle()),
-		eOval("oval", new GOval()),
-		eLine("line", new GLine()),
-		ePolygon("polygon", new GPolygon());
+		eRectangle("rectangle", new GRectangle(),"src/global/rect.png"),
+		eOval("oval", new GOval(),"src/global/oval.png"),
+		eLine("line", new GLine(),"src/global/line.png"),
+		ePolygon("polygon", new GPolygon(),"src/global/polygon.png");
 		
 		private String text;
 		private GShape shapeTool;
-		private EShapeButtons(String text, GShape shapeTool){
+		private String imagePath;
+		private EShapeButtons(String text, GShape shapeTool, String imagePath){
 			this.text = text;
 			this.shapeTool = shapeTool;
+			this.imagePath = imagePath;
 		}
 		
 		public String getText() { return this.text; }
 		public GShape getShapeTool() { return this.shapeTool; }
+		public String getImage() { return this.imagePath; }
 		
 	}
 

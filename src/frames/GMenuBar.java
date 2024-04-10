@@ -18,4 +18,8 @@ public class GMenuBar extends JMenuBar {
 		this.add(this.editMenu);
 	}
 
+	public void initialize() {
+		
+	}
+
 }
