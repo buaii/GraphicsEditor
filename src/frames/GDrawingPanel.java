@@ -1,5 +1,6 @@
 package frames;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -24,6 +25,9 @@ public class GDrawingPanel extends JPanel {
 	private GShape shapeTool;
 	private GShape currentShape;
 	
+	private Image doubleBuffering;
+	private Graphics dbGraphics;
+	
 	public GDrawingPanel() {
 		MouseEventHandler mouseEventHandler = new MouseEventHandler();
 		this.addMouseListener(mouseEventHandler);
@@ -34,16 +38,22 @@ public class GDrawingPanel extends JPanel {
 	}
 	
 	public void initialize() {
-		
+		this.doubleBuffering = createImage(getWidth(), getHeight());
+		this.dbGraphics = this.doubleBuffering.getGraphics();
 	}	
 	
 	public void paint(Graphics graphics) {	
 		if (!shapes.isEmpty()) {
 			for (GShape g : shapes) {
-				g.draw(graphics);
+				g.draw(dbGraphics);
 			}
-		}
-		
+		}		
+		graphics.drawImage(doubleBuffering, 0, 0, null);
+	}
+	
+	public void setDB() {
+		this.initialize();
+		this.paint(getGraphics());
 	}
 	
 	public void setShapeTool(GShape shapeTool) {
@@ -57,7 +67,8 @@ public class GDrawingPanel extends JPanel {
 	
 	private void keepDrawing(int x, int y) {
 		currentShape.movePoint(x, y);
-		currentShape.drag(getGraphics());
+		setDB();
+		currentShape.drag(getGraphics(), dbGraphics, doubleBuffering);
 	}
 	
 	private void continueDrawing(int x, int y) {
@@ -68,6 +79,7 @@ public class GDrawingPanel extends JPanel {
 		currentShape.addPoint(x, y);
 		currentShape.draw(getGraphics());
 		shapes.add(currentShape.clone());
+		setDB();
 	}
 	
 	private class MouseEventHandler implements MouseListener, MouseMotionListener {		

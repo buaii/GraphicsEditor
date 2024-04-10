@@ -1,6 +1,7 @@
 package shapeTools;
 
 import java.awt.Graphics;
+import java.awt.Image;
 
 public abstract class G2PShape extends GShape {
 	
@@ -14,7 +15,7 @@ public abstract class G2PShape extends GShape {
 		this.y2 = y2;
 	}
 	
-	public abstract void drag(Graphics g);
+	public abstract void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering);
 	public abstract void draw(Graphics g);	
 	
 	@Override

@@ -1,5 +1,6 @@
 package shapeTools;
 import java.awt.Graphics;
+import java.awt.Image;
 
 public abstract class GShape {
 	public enum EDrawingStyle {
@@ -29,12 +30,13 @@ public abstract class GShape {
 	public abstract void movePoint(int x2, int y2);	
 	public abstract void addPoint(int x2, int y2);
 	
-	public abstract void drag(Graphics g);
+	public abstract void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering);
 	public abstract void draw(Graphics g);	
 	public abstract GShape clone();
 	public int[] getX() {
 		return null;
 	}
+	
 	
 	
 	

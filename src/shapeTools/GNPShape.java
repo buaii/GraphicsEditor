@@ -1,7 +1,7 @@
 package shapeTools;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Image;
 
 public abstract class GNPShape extends GShape {
 	
@@ -54,14 +54,16 @@ public abstract class GNPShape extends GShape {
 	}
 
 	@Override
-	public void drag(Graphics g) {
-		Graphics2D graphics2D = (Graphics2D) g;
+	public void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering) {
+		/*Graphics2D graphics2D = (Graphics2D) g;
 		// 그림이 없으면 그리고 있으면 지우는 도구
 		graphics2D.setXORMode(graphics2D.getBackground());
 		// erase old shape
 		graphics2D.drawLine(x1, y1, ox2, oy2);
 		// draw new shape
-		graphics2D.drawLine(x1, y1, x2, y2);
+		graphics2D.drawLine(x1, y1, x2, y2);*/
+		dbGraphics.drawPolyline(xPoints, yPoints, nPoints+1);
+		g.drawImage(doubleBuffering, 0, 0, null);
 	}
 
 	public abstract void draw(Graphics g);	

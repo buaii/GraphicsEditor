@@ -29,6 +29,7 @@ public class GShapeToolBar extends JToolBar {
 			add(button);
 			buttonGroup.add(button);
 		}
+		
 	}
 
 	public void initialize() {
