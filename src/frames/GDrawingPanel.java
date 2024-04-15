@@ -1,19 +1,26 @@
 package frames;
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import shapeTools.GShape;
 import shapeTools.GShape.EDrawingStyle;
 
 public class GDrawingPanel extends JPanel {
+	// attributes
 	private static final long serialVersionUID = 1L;
-	
 	private enum EDrawingState {
 		eIdle,
 		e2PState,
@@ -21,13 +28,14 @@ public class GDrawingPanel extends JPanel {
 	} 
 	private EDrawingState eDrawingState;
 	
+	// components
 	private Vector<GShape> shapes;
 	private GShape shapeTool;
 	private GShape currentShape;
-	
 	private Image doubleBuffering;
 	private Graphics dbGraphics;
 	
+	// constructors
 	public GDrawingPanel() {
 		MouseEventHandler mouseEventHandler = new MouseEventHandler();
 		this.addMouseListener(mouseEventHandler);
@@ -42,15 +50,7 @@ public class GDrawingPanel extends JPanel {
 		this.dbGraphics = this.doubleBuffering.getGraphics();
 	}	
 	
-	public void paint(Graphics graphics) {	
-		if (!shapes.isEmpty()) {
-			for (GShape g : shapes) {
-				g.draw(dbGraphics);
-			}
-		}		
-		graphics.drawImage(doubleBuffering, 0, 0, null);
-	}
-	
+	// setters and getters
 	public void setDB() {
 		this.initialize();
 		this.paint(getGraphics());
@@ -58,6 +58,59 @@ public class GDrawingPanel extends JPanel {
 	
 	public void setShapeTool(GShape shapeTool) {
 		this.shapeTool = shapeTool;		
+	}
+	
+	// methods
+	public void save() throws IOException {
+        // 파일 저장 다이얼로그 생성
+        JFileChooser fileChooser = new JFileChooser();
+
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().toLowerCase().endsWith(".xml");
+            }
+
+            public String getDescription() {
+                return "PNG 파일(*.png)";
+            }
+        });
+        // 다이얼로그를 보여주고 사용자가 파일을 저장할 경로를 선택하도록 함
+        int result = fileChooser.showSaveDialog(null);
+
+        // 사용자가 확인 버튼을 눌렀을 때
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // 선택한 파일 가져오기
+            File selectedFile = fileChooser.getSelectedFile();
+            String filePath = selectedFile.getAbsolutePath();
+
+            // 확장자가 .png인지 확인
+            if (!filePath.toLowerCase().endsWith(".png")) {
+                filePath += ".png";
+            }
+
+            // 이미지로 객체 저장
+            BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics g = image.createGraphics();
+            this.paint(g);
+            g.dispose();
+
+            // 이미지를 파일로 저장
+            File file = new File(filePath);
+            ImageIO.write(image, "png", file);
+
+            JOptionPane.showMessageDialog(null, "파일이 저장되었습니다.", "성공", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+        	JOptionPane.showMessageDialog(null, "파일저장이 취소되었습니다.", "취소", JOptionPane.INFORMATION_MESSAGE);
+        }
+	}
+	
+	public void paint(Graphics graphics) {	
+		if (!shapes.isEmpty()) {
+			for (GShape g : shapes) {
+				g.draw(dbGraphics);
+			}
+		}		
+		graphics.drawImage(doubleBuffering, 0, 0, null);
 	}
 	
 	private void startDrawing(int x, int y) {

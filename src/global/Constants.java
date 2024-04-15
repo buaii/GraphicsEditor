@@ -27,6 +27,18 @@ public class Constants {
 		public String getImage() { return this.imagePath; }
 		
 	}
-
+	
+	public enum EFileMenus {
+		eNew("New"),
+		eSave("Save"),
+		eSaveAs("Save As");
+		
+		private String text;
+		private EFileMenus(String text) {
+			this.text = text;
+		}
+		public String getText() { return this.text; }
+		
+	}
 	public static final int NUM_POINTS = 20;
 }
