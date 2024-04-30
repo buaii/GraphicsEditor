@@ -5,14 +5,13 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Vector;
 
-import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import shapeTools.GShape;
@@ -62,45 +61,30 @@ public class GDrawingPanel extends JPanel {
 	
 	// methods
 	public void save() throws IOException {
-        // 파일 저장 다이얼로그 생성
-        JFileChooser fileChooser = new JFileChooser();
-
-        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-            public boolean accept(File f) {
-                return f.isDirectory() || f.getName().toLowerCase().endsWith(".xml");
-            }
-
-            public String getDescription() {
-                return "PNG 파일(*.png)";
-            }
-        });
-        // 다이얼로그를 보여주고 사용자가 파일을 저장할 경로를 선택하도록 함
-        int result = fileChooser.showSaveDialog(null);
-
-        // 사용자가 확인 버튼을 눌렀을 때
-        if (result == JFileChooser.APPROVE_OPTION) {
-            // 선택한 파일 가져오기
-            File selectedFile = fileChooser.getSelectedFile();
-            String filePath = selectedFile.getAbsolutePath();
-
-            // 확장자가 .png인지 확인
-            if (!filePath.toLowerCase().endsWith(".png")) {
-                filePath += ".png";
-            }
-
-            // 이미지로 객체 저장
-            BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
-            Graphics g = image.createGraphics();
-            this.paint(g);
-            g.dispose();
-
-            // 이미지를 파일로 저장
-            File file = new File(filePath);
-            ImageIO.write(image, "png", file);
-
-            JOptionPane.showMessageDialog(null, "파일이 저장되었습니다.", "성공", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-        	JOptionPane.showMessageDialog(null, "파일저장이 취소되었습니다.", "취소", JOptionPane.INFORMATION_MESSAGE);
+		try {
+            FileOutputStream fileOut = new FileOutputStream("shapes.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(shapes);
+            out.close();
+            fileOut.close();
+            System.out.println("Serialized data is saved in shapes.ser");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void load() throws IOException {
+        try {
+            FileInputStream fileIn = new FileInputStream("shapes.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            shapes = (Vector<GShape>) in.readObject();
+            in.close();
+            fileIn.close();
+            this.paint(getGraphics());
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
         }
 	}
 	

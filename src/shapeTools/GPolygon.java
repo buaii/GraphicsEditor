@@ -5,6 +5,8 @@ import global.Constants;
 
 
 public class GPolygon extends GNPShape {	
+	private static final long serialVersionUID = 1L;
+
 	public GPolygon() {
 		super(EDrawingStyle.eNPStyle);
 		this.xPoints = new int[Constants.NUM_POINTS];

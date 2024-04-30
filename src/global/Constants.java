@@ -30,6 +30,7 @@ public class Constants {
 	
 	public enum EFileMenus {
 		eNew("New"),
+		eLoad("Load"),
 		eSave("Save"),
 		eSaveAs("Save As");
 		

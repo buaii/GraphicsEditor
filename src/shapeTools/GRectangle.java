@@ -3,7 +3,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 public class GRectangle extends G2PShape {
-	
+	private static final long serialVersionUID = 1L;
+
 	public GRectangle() {
 		super(EDrawingStyle.e2PStyle);
 	}

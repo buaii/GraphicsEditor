@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 public abstract class GNPShape extends GShape {
+	private static final long serialVersionUID = 1L;
 	
 	protected int xPoints[];
 	protected int yPoints[];

@@ -4,7 +4,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 public abstract class G2PShape extends GShape {
-	
+	private static final long serialVersionUID = 1L;
+
 	public G2PShape(EDrawingStyle eDrawingStyle) {
 		super(EDrawingStyle.e2PStyle);
 	}

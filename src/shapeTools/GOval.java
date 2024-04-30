@@ -4,7 +4,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 public class GOval extends G2PShape {
-	
+	private static final long serialVersionUID = 1L;
+
 	public GOval() {
 		super(EDrawingStyle.e2PStyle);
 	}

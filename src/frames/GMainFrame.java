@@ -56,7 +56,14 @@ public class GMainFrame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			EFileMenus eFileMenu = EFileMenus.valueOf(e.getActionCommand());
 			if (eFileMenu.ordinal() == 1) {
-				System.out.println("hello");
+				try {
+					drawingPanel.load();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else if (eFileMenu.ordinal() == 2) {
 				try {
 					drawingPanel.save();
 				} catch (IOException e1) {
