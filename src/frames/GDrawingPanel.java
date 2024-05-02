@@ -5,6 +5,8 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -63,7 +65,8 @@ public class GDrawingPanel extends JPanel {
 	public void save() throws IOException {
 		try {
             FileOutputStream fileOut = new FileOutputStream("shapes.ser");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            ObjectOutputStream out = new ObjectOutputStream(
+            		new BufferedOutputStream(fileOut));
             out.writeObject(shapes);
             out.close();
             fileOut.close();
@@ -77,7 +80,8 @@ public class GDrawingPanel extends JPanel {
 	public void load() throws IOException {
         try {
             FileInputStream fileIn = new FileInputStream("shapes.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
+            ObjectInputStream in = new ObjectInputStream(
+            		new BufferedInputStream(fileIn));
             shapes = (Vector<GShape>) in.readObject();
             in.close();
             fileIn.close();

@@ -30,48 +30,22 @@ public class GMainFrame extends JFrame {
 //		BoxLayout layoutManager = new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS);
 		this.setLayout(layoutManager);
 		
-		MenuActionHandler menuActionHandler = new MenuActionHandler();
-		this.menubar = new GMenuBar(menuActionHandler);
-		this.setJMenuBar(this.menubar);
-		
 		ShapeActionHandler shapeActionHandler = new ShapeActionHandler();
 		this.shapeToolBar = new GShapeToolBar(shapeActionHandler);
 		this.add(shapeToolBar, BorderLayout.NORTH);
 		
-		
 		this.drawingPanel = new GDrawingPanel();
 		this.add(drawingPanel, BorderLayout.CENTER);
 		
+		this.menubar = new GMenuBar();
+		this.setJMenuBar(this.menubar);
 	}
 	
 	// methods
 	public void initialize() {
-		this.menubar.initialize();
+		this.menubar.initialize(this.drawingPanel);
 		this.shapeToolBar.initialize();
 		this.drawingPanel.initialize();
-	}
-	
-	public class MenuActionHandler implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			EFileMenus eFileMenu = EFileMenus.valueOf(e.getActionCommand());
-			if (eFileMenu.ordinal() == 1) {
-				try {
-					drawingPanel.load();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-			else if (eFileMenu.ordinal() == 2) {
-				try {
-					drawingPanel.save();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		}
 	}
 	
 	public class ShapeActionHandler implements ActionListener {

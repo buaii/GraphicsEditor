@@ -1,7 +1,6 @@
 package frames;
 import javax.swing.JMenuBar;
 
-import frames.GMainFrame.MenuActionHandler;
 import menus.GMenuItem;
 
 public class GMenuBar extends JMenuBar {
@@ -10,16 +9,17 @@ public class GMenuBar extends JMenuBar {
 	public GMenuItem fileMenu;
 	public GMenuItem editMenu;
 	
-	public GMenuBar(MenuActionHandler menuActionHandler) {
-		this.fileMenu = new GMenuItem("File", menuActionHandler);
+	public GMenuBar() {
+		this.fileMenu = new GMenuItem("File");
 		this.add(this.fileMenu);
 		
-		this.editMenu = new GMenuItem("Edit", menuActionHandler);
+		this.editMenu = new GMenuItem("Edit");
 		this.add(this.editMenu);
 	}
 
-	public void initialize() {
-		
+	public void initialize(GDrawingPanel gDrawingPanel) {
+		this.fileMenu.initialize(gDrawingPanel);
+		this.editMenu.initialize(gDrawingPanel);
 	}
 
 }
