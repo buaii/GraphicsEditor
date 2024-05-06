@@ -1,25 +1,28 @@
 package frames;
 import javax.swing.JMenuBar;
 
-import menus.GMenuItem;
+import menus.GFileMenu;
 
 public class GMenuBar extends JMenuBar {
 	private static final long serialVersionUID = 1L;
 	
-	public GMenuItem fileMenu;
-	public GMenuItem editMenu;
+	public GFileMenu fileMenu;
+	public GFileMenu editMenu;
 	
 	public GMenuBar() {
-		this.fileMenu = new GMenuItem("File");
+		this.fileMenu = new GFileMenu("File");
 		this.add(this.fileMenu);
 		
-		this.editMenu = new GMenuItem("Edit");
+		this.editMenu = new GFileMenu("Edit");
 		this.add(this.editMenu);
 	}
 
-	public void initialize(GDrawingPanel gDrawingPanel) {
-		this.fileMenu.initialize(gDrawingPanel);
-		this.editMenu.initialize(gDrawingPanel);
+	public void initialize() {
+		
 	}
 
+	public void associate(GDrawingPanel drawingPanel) {
+		this.fileMenu.associate(drawingPanel);
+		this.editMenu.associate(drawingPanel);
+	}
 }

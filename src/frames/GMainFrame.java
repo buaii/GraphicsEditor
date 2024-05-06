@@ -1,13 +1,6 @@
 package frames;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-
 import javax.swing.JFrame;
-
-import global.Constants.EFileMenus;
-import global.Constants.EShapeButtons;
 
 public class GMainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -30,8 +23,7 @@ public class GMainFrame extends JFrame {
 //		BoxLayout layoutManager = new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS);
 		this.setLayout(layoutManager);
 		
-		ShapeActionHandler shapeActionHandler = new ShapeActionHandler();
-		this.shapeToolBar = new GShapeToolBar(shapeActionHandler);
+		this.shapeToolBar = new GShapeToolBar();
 		this.add(shapeToolBar, BorderLayout.NORTH);
 		
 		this.drawingPanel = new GDrawingPanel();
@@ -39,21 +31,16 @@ public class GMainFrame extends JFrame {
 		
 		this.menubar = new GMenuBar();
 		this.setJMenuBar(this.menubar);
+		
+		this.menubar.associate(this.drawingPanel);
+		this.shapeToolBar.associate(this.drawingPanel);
 	}
 	
 	// methods
 	public void initialize() {
-		this.menubar.initialize(this.drawingPanel);
+		this.menubar.initialize();
 		this.shapeToolBar.initialize();
 		this.drawingPanel.initialize();
-	}
-	
-	public class ShapeActionHandler implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			EShapeButtons eShapeButton = EShapeButtons.valueOf(e.getActionCommand());
-			drawingPanel.setShapeTool(eShapeButton.getShapeTool());					
-		}
 	}
 	
 }

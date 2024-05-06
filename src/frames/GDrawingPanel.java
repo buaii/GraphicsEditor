@@ -5,13 +5,6 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -61,35 +54,13 @@ public class GDrawingPanel extends JPanel {
 		this.shapeTool = shapeTool;		
 	}
 	
-	// methods
-	public void save() throws IOException {
-		try {
-            FileOutputStream fileOut = new FileOutputStream("shapes.ser");
-            ObjectOutputStream out = new ObjectOutputStream(
-            		new BufferedOutputStream(fileOut));
-            out.writeObject(shapes);
-            out.close();
-            fileOut.close();
-            System.out.println("Serialized data is saved in shapes.ser");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	public Vector<GShape> getShape() {
+		return this.shapes;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void load() throws IOException {
-        try {
-            FileInputStream fileIn = new FileInputStream("shapes.ser");
-            ObjectInputStream in = new ObjectInputStream(
-            		new BufferedInputStream(fileIn));
-            shapes = (Vector<GShape>) in.readObject();
-            in.close();
-            fileIn.close();
-            this.paint(getGraphics());
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
+	public void setShape(Object object) {
+		this.shapes = (Vector<GShape>) object;
 	}
 	
 	public void paint(Graphics graphics) {	

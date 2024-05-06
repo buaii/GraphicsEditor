@@ -1,6 +1,8 @@
 package frames;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -12,8 +14,11 @@ import global.Constants.EShapeButtons;
 public class GShapeToolBar extends JToolBar {
 	private static final long serialVersionUID = 1L;
 	
-	public GShapeToolBar(GMainFrame.ShapeActionHandler shapeActionHandler) {
+	private GDrawingPanel drawingPanel;
+	
+	public GShapeToolBar() {
 		ButtonGroup buttonGroup = new ButtonGroup();
+		ShapeActionHandler shapeActionHandler = new ShapeActionHandler();
 		
 		for (EShapeButtons eShapeButtons : EShapeButtons.values()) {
 			ImageIcon icon = new ImageIcon(eShapeButtons.getImage());
@@ -36,5 +41,21 @@ public class GShapeToolBar extends JToolBar {
 		JRadioButton defaultButton 
 			= (JRadioButton) (this.getComponent(EShapeButtons.eRectangle.ordinal()));
 		defaultButton.doClick();
+	}
+	
+	public void associate(GDrawingPanel drawingPanel) {
+		this.drawingPanel = drawingPanel;
+	}
+	
+	private void setShapeTool(EShapeButtons eShapeButton) {
+		this.drawingPanel.setShapeTool(eShapeButton.getShapeTool());		
+	}
+	
+	private class ShapeActionHandler implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			EShapeButtons eShapeButton = EShapeButtons.valueOf(e.getActionCommand());
+			setShapeTool(eShapeButton);
+		}
 	}
 }
