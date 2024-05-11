@@ -14,7 +14,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import frames.GDrawingPanel;
-import global.Constants.EFileMenus;
+import global.Constants.GMenubar.EFileMenuItem;
 import shapeTools.GShape;
 
 public class GFileMenu extends JMenu {
@@ -25,7 +25,7 @@ public class GFileMenu extends JMenu {
 	public GFileMenu(String s) {
 		super(s);
 		
-		for (EFileMenus eFileMenu : EFileMenus.values()) {
+		for (EFileMenuItem eFileMenu : EFileMenuItem.values()) {
 			MenuActionHandler menuActionHandler = new MenuActionHandler();
 			JMenuItem jMenuItem = new JMenuItem(eFileMenu.getText());
 			jMenuItem.setActionCommand(eFileMenu.toString());
@@ -57,7 +57,7 @@ public class GFileMenu extends JMenu {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void load() throws IOException {
+	public void open() throws IOException {
         try {
             FileInputStream fileIn = new FileInputStream("shapes.ser");
             ObjectInputStream in = new ObjectInputStream(
@@ -77,10 +77,10 @@ public class GFileMenu extends JMenu {
 	public class MenuActionHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			EFileMenus eFileMenu = EFileMenus.valueOf(e.getActionCommand());
+			EFileMenuItem eFileMenu = EFileMenuItem.valueOf(e.getActionCommand());
 			if (eFileMenu.ordinal() == 1) {
 				try {
-					load();
+					open();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

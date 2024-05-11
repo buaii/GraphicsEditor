@@ -1,6 +1,11 @@
 package frames;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import javax.swing.JFrame;
+
+import global.Constants;
 
 public class GMainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -13,14 +18,15 @@ public class GMainFrame extends JFrame {
 	// constructor
 	public GMainFrame() {
 		// set attribute 
-		this.setSize(600, 800);
+		this.setSize(Constants.GMainFrame.WIDTH, Constants.GMainFrame.HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (screenSize.width - Constants.GMainFrame.WIDTH) / 2;
+        int y = (screenSize.height - Constants.GMainFrame.HEIGHT) / 2;
+        this.setLocation(x, y);
+        
 		// create components
-//		LayoutManager layoutManager = new FlowLayout();
-//		LayoutManager layoutManager = new CardLayout();
-		BorderLayout layoutManager = new BorderLayout();
-//		BoxLayout layoutManager = new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS);
+		BorderLayout layoutManager = new BorderLayout(); 
 		this.setLayout(layoutManager);
 		
 		this.shapeToolBar = new GShapeToolBar();
