@@ -37,4 +37,24 @@ public class GOval extends G2PShape {
 		return new GOval(this.x1, this.y1, this.x2, this.y2);
 	}
 
+	@Override
+	public boolean onClicked(int x, int y) {
+	    return Math.min(x1, x2) < x && x < Math.max(x1, x2) && Math.min(y1, y2) < y && y < Math.max(y1, y2);
+	}
+	
+	@Override
+	public void startMove(int x, int y) {
+		ox2 = x;
+		oy2 = y;	
+	}
+	
+	@Override
+	public void move(int x, int y) {
+		x1 += x - ox2;
+		x2 += x - ox2;
+		y1 += y - oy2;
+		y2 += y - oy2;
+		ox2 = x;
+		oy2 = y;
+	}
 }

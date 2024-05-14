@@ -11,6 +11,12 @@ public abstract class GShape implements Serializable {
 		eNPStyle
 	}
 	private EDrawingStyle eDrawingStyle;
+	
+	public enum EAnchor {
+		eMove,
+		eResize,
+		eRotate
+	}
 	protected int x1, y1, x2, y2, ox2, oy2;
 	
 	public EDrawingStyle getEDrawingStyle() {
@@ -40,8 +46,14 @@ public abstract class GShape implements Serializable {
 		return null;
 	}
 	
+	public EAnchor onShape(int x, int y) {
+		
+		return null;
+	}
+	public abstract boolean onClicked(int x, int y);
 	
-	
+	public abstract void startMove(int x, int y);
+	public abstract void move(int x, int y);
 	
 	
 }
