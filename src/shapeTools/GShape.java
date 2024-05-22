@@ -1,6 +1,7 @@
 package shapeTools;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Shape;
 import java.io.Serializable;
 
 public abstract class GShape implements Serializable {
@@ -12,18 +13,23 @@ public abstract class GShape implements Serializable {
 	}
 	private EDrawingStyle eDrawingStyle;
 	
+	public EDrawingStyle getEDrawingStyle() {
+		return this.eDrawingStyle; 
+	}
+	
 	public enum EAnchor {
 		eMove,
 		eResize,
 		eRotate
 	}
+	
+	// int x[], int y[];
+	protected Shape shape;
 	protected int x1, y1, x2, y2, ox2, oy2;
 	
-	public EDrawingStyle getEDrawingStyle() {
-		return this.eDrawingStyle;
-	}
-	public GShape(EDrawingStyle eDrawingStyle) {
+	public GShape(EDrawingStyle eDrawingStyle, Shape shape) {
 		this.eDrawingStyle = eDrawingStyle;
+		this.shape = shape;
 		
 		this.x1 = 0;
 		this.y1 = 0;
@@ -32,7 +38,6 @@ public abstract class GShape implements Serializable {
 		this.ox2 = 0;
 		this.oy2 = 0;
 	}
-	
 	public GShape() {} 
 	
 	public abstract void setOrigin(int x1, int y1); 
@@ -46,11 +51,9 @@ public abstract class GShape implements Serializable {
 		return null;
 	}
 	
-	public EAnchor onShape(int x, int y) {
-		
-		return null;
+	public boolean onShape(int x, int y) {
+		return false;
 	}
-	public abstract boolean onClicked(int x, int y);
 	
 	public abstract void startMove(int x, int y);
 	public abstract void move(int x, int y);

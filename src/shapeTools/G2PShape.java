@@ -2,12 +2,13 @@ package shapeTools;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Shape;
 
 public abstract class G2PShape extends GShape {
 	private static final long serialVersionUID = 1L;
 
-	public G2PShape(EDrawingStyle eDrawingStyle) {
-		super(EDrawingStyle.e2PStyle);
+	public G2PShape(EDrawingStyle eDrawingStyle, Shape shape) {
+		super(EDrawingStyle.e2PStyle, shape);
 	}
 	public G2PShape(int x1, int y1, int x2, int y2) {
 		this.x1 = x1;

@@ -1,65 +1,78 @@
 package shapeTools;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Shape;
+import java.awt.geom.Line2D;
 
 public class GLine extends G2PShape {
 	private static final long serialVersionUID = 1L;
 
 	public GLine() {
-		super(EDrawingStyle.e2PStyle);
+		super(EDrawingStyle.e2PStyle, new Line2D.Float());
 	}
 	
-	public GLine(int x1, int y1, int x2, int y2) {
-		super(x1, y1, x2, y2);
+	public GLine(Shape shape) {
+		super(EDrawingStyle.e2PStyle, shape);
+	}
+	
+	@Override
+	public GShape clone() {
+		if (shape == null) {
+			return new GLine();
+		} else {
+			GLine gLine = new GLine(this.shape);
+			this.shape = null;
+			return gLine;
+		}
 	}
 
 	@Override
 	public void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering) {
-		/*Graphics2D graphics2D = (Graphics2D) g;
-		// 그림이 없으면 그리고 있으면 지우는 도구
-		graphics2D.setXORMode(graphics2D.getBackground());
-		// erase old shape
-		graphics2D.drawLine(x1, y1, ox2, oy2);
-		// draw new shape
-		graphics2D.drawLine(x1, y1, x2, y2);*/
-		dbGraphics.drawLine(x1, y1, x2, y2);
+		Graphics2D graphics2D = (Graphics2D) dbGraphics;
+		Line2D.Float line = (Line2D.Float)this.shape;
+		line.setLine(x1, y1, x2, y2);
+		graphics2D.draw(line); 
 		g.drawImage(doubleBuffering, 0, 0, null);
-	}
-	
-	@Override
-	public void draw(Graphics g) {
-		g.drawLine(x1, y1, x2, y2);
-	}
-
-	@Override
-	public GShape clone() {
-		return new GLine(this.x1, this.y1, this.x2, this.y2);
-	}
-
-	@Override
-	public void addPoint(int x, int y) {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
-	public boolean onClicked(int x, int y) {
-	    return Math.min(x1, x2) < x && x < Math.max(x1, x2) && Math.min(y1, y2) < y && y < Math.max(y1, y2);
+	public void draw(Graphics g) {
+		Graphics2D graphics2D = (Graphics2D) g;
+		Line2D.Float line = (Line2D.Float)this.shape;
+		
+		graphics2D.draw(line);
 	}
+
 	
 	@Override
+	public boolean onShape(int x, int y) {
+		Line2D.Float line = (Line2D.Float)this.shape;
+		return line.getBounds().contains(x, y);
+	}
+
+	@Override
 	public void startMove(int x, int y) {
+		Line2D.Float line = (Line2D.Float)this.shape;
+		x1 = (int)line.getX1();
+		y1 = (int)line.getY1();
+		x2 = (int)line.getX2();
+		y2 = (int)line.getY2();
+		
 		ox2 = x;
-		oy2 = y;	
+		oy2 = y;
 	}
 	
 	@Override
 	public void move(int x, int y) {
-		x1 += x - ox2;
-		x2 += x - ox2;
-		y1 += y - oy2;
-		y2 += y - oy2;
+		Line2D.Float line = (Line2D.Float)this.shape;
+		x1 = (int)line.getX1() + x - ox2;
+		y1 = (int)line.getY1() + y - oy2;
+		x2 = (int)line.getX2() + x - ox2;
+		y2 = (int)line.getY2() + y - oy2;
+		
 		ox2 = x;
 		oy2 = y;
 	}
