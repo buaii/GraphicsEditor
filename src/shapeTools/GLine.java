@@ -39,15 +39,6 @@ public class GLine extends G2PShape {
 	}
 	
 	@Override
-	public void draw(Graphics g) {
-		Graphics2D graphics2D = (Graphics2D) g;
-		Line2D.Float line = (Line2D.Float)this.shape;
-		
-		graphics2D.draw(line);
-	}
-
-	
-	@Override
 	public boolean onShape(int x, int y) {
 		Line2D.Float line = (Line2D.Float)this.shape;
 		return line.getBounds().contains(x, y);
@@ -72,7 +63,7 @@ public class GLine extends G2PShape {
 		y1 = (int)line.getY1() + y - oy2;
 		x2 = (int)line.getX2() + x - ox2;
 		y2 = (int)line.getY2() + y - oy2;
-		
+		moveAnchor(x, y);
 		ox2 = x;
 		oy2 = y;
 	}

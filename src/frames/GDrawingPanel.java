@@ -136,6 +136,17 @@ public class GDrawingPanel extends JPanel {
 		setDB();
 	}
 	
+	private void onAnchor() {
+		onClicked.onAnchor();
+		setDB();		
+		onClicked.drag(getGraphics(), dbGraphics, doubleBuffering);
+	}
+	
+	private void offAnchor() {
+		for (GShape shape : this.shapes) {
+			shape.offAnchor();
+		}
+	}
 	private class MouseEventHandler implements MouseListener, MouseMotionListener {		
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -145,12 +156,14 @@ public class GDrawingPanel extends JPanel {
 					if (shapeTool.getEDrawingStyle() == EDrawingStyle.e2PStyle) {
 						startDrawing(e.getX(), e.getY());
 						eDrawingState = EDrawingState.e2PState;
+						offAnchor();
 					}
 				} else {
 					// transformation					
 					// eTransformation = ETransformation.
 					startMoving(e.getX(), e.getY());
 					eDrawingState = EDrawingState.eTransformation;
+					onAnchor();
 				}
 			}
 		}

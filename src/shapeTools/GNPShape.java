@@ -38,9 +38,7 @@ public abstract class GNPShape extends GShape {
 	public void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering) {
 		
 	}
-
-	public abstract void draw(Graphics g);	
-
+	
 	@Override
 	public GShape clone() {
 		// TODO Auto-generated method stub

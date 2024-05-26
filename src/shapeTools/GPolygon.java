@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Shape;
-import java.awt.geom.GeneralPath;
+import java.awt.geom.GeneralPath; 
 
 public class GPolygon extends GNPShape {	
 	private static final long serialVersionUID = 1L;
@@ -43,13 +43,6 @@ public class GPolygon extends GNPShape {
 		graphics2D.draw(polyLine);
 		g.drawImage(doubleBuffering, 0, 0, null);
 	}
-	
-	@Override
-	public void draw(Graphics g) {
-		Graphics2D graphics2D = (Graphics2D) g;
-		Polygon polygon = (Polygon)this.shape;
-		graphics2D.draw(polygon);
-	}	
 
 	@Override
 	public void setOrigin(int x, int y) {
@@ -109,6 +102,7 @@ public class GPolygon extends GNPShape {
 		return minX < x && x < maxX && minY < y && y < maxY;
 	}
 	
+	
 	@Override
 	public void move(int x, int y) {
 		Polygon polygon = (Polygon)this.shape;
@@ -116,6 +110,7 @@ public class GPolygon extends GNPShape {
 			polygon.xpoints[i] += x - ox2;
 			polygon.ypoints[i] += y - oy2;
 		}
+		moveAnchor(x, y);
 		ox2 = x;
 		oy2 = y;
 		

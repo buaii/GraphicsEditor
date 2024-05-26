@@ -33,18 +33,9 @@ public class GRectangle extends G2PShape {
 	public void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering) {
 		Graphics2D graphics2D = (Graphics2D) dbGraphics;
 		Rectangle rectangle = (Rectangle)this.shape;
-		System.out.println(this.shape);
 		rectangle.setFrame(Math.min(x1,x2), Math.min(y1, y2), Math.abs(x1-x2), Math.abs(y1-y2));
 		graphics2D.draw(rectangle);
 		g.drawImage(doubleBuffering, 0, 0, null);
-	}
-	
-	@Override
-	public void draw(Graphics g) {
-		Graphics2D graphics2D = (Graphics2D) g; 
-		Rectangle rectangle = (Rectangle)this.shape;
-		
-		graphics2D.draw(rectangle);
 	}
 	
 	@Override
@@ -72,7 +63,7 @@ public class GRectangle extends G2PShape {
 		y1 = (int)rectangle.getY() + y - oy2;
 		x2 = (int)rectangle.getWidth() + x1;
 		y2 = (int)rectangle.getHeight() + y1;
-		
+		moveAnchor(x, y);
 		ox2 = x;
 		oy2 = y;
 	}

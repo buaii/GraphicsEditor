@@ -18,7 +18,6 @@ public abstract class G2PShape extends GShape {
 	}
 	
 	public abstract void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering);
-	public abstract void draw(Graphics g);	
 	
 	@Override
 	public void setOrigin(int x, int y) {
@@ -48,6 +47,5 @@ public abstract class G2PShape extends GShape {
 	public GShape clone() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
+	}	
 }

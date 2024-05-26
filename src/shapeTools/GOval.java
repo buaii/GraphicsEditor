@@ -28,14 +28,6 @@ public class GOval extends G2PShape {
 	}
 	
 	@Override
-	public void draw(Graphics g) {
-		Graphics2D graphics2D = (Graphics2D) g;
-		Ellipse2D.Float oval = (Ellipse2D.Float)this.shape;
-		
-		graphics2D.draw(oval);
-	}
-
-	@Override
 	public GShape clone() {
 		if (shape == null) {
 			return new GOval(); 
@@ -73,6 +65,7 @@ public class GOval extends G2PShape {
 		x2 = (int)oval.getWidth() + x1;
 		y2 = (int)oval.getHeight() + y1;
 		
+		moveAnchor(x, y);
 		ox2 = x;
 		oy2 = y;
 	}
