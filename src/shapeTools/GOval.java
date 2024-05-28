@@ -19,15 +19,6 @@ public class GOval extends G2PShape {
 	}
 
 	@Override
-	public void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering) {
-		Graphics2D graphics2D = (Graphics2D) dbGraphics;
-		Ellipse2D.Float oval = (Ellipse2D.Float)this.shape;
-		oval.setFrame(Math.min(x1,x2), Math.min(y1, y2), Math.abs(x1-x2), Math.abs(y1-y2));
-		graphics2D.draw(oval);
-		g.drawImage(doubleBuffering, 0, 0, null);
-	}
-	
-	@Override
 	public GShape clone() {
 		if (shape == null) {
 			return new GOval(); 
@@ -37,12 +28,15 @@ public class GOval extends G2PShape {
 			return gOval;
 		}
 	}
-
 	
 	@Override
-	public boolean onShape(int x, int y) {
+	public void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering) {
+		Graphics2D graphics2D = (Graphics2D) dbGraphics;
 		Ellipse2D.Float oval = (Ellipse2D.Float)this.shape;
-		return oval.getBounds().contains(x, y);
+		oval.setFrame(Math.min(x1,x2), Math.min(y1, y2), Math.abs(x1-x2), Math.abs(y1-y2));
+		drawAnchors(graphics2D);
+		graphics2D.draw(oval);
+		g.drawImage(doubleBuffering, 0, 0, null);
 	}
 
 	@Override
@@ -64,8 +58,6 @@ public class GOval extends G2PShape {
 		y1 = (int)oval.getY() + y - oy2;
 		x2 = (int)oval.getWidth() + x1;
 		y2 = (int)oval.getHeight() + y1;
-		
-		moveAnchor(x, y);
 		ox2 = x;
 		oy2 = y;
 	}

@@ -34,16 +34,11 @@ public class GRectangle extends G2PShape {
 		Graphics2D graphics2D = (Graphics2D) dbGraphics;
 		Rectangle rectangle = (Rectangle)this.shape;
 		rectangle.setFrame(Math.min(x1,x2), Math.min(y1, y2), Math.abs(x1-x2), Math.abs(y1-y2));
+		drawAnchors(graphics2D);
 		graphics2D.draw(rectangle);
 		g.drawImage(doubleBuffering, 0, 0, null);
 	}
 	
-	@Override
-	public boolean onShape(int x, int y) {
-		Rectangle rectangle = (Rectangle)this.shape;
-		return rectangle.contains(x, y);
-	}
-
 	@Override
 	public void startMove(int x, int y) {
 		Rectangle rectangle = (Rectangle)this.shape;
@@ -63,7 +58,7 @@ public class GRectangle extends G2PShape {
 		y1 = (int)rectangle.getY() + y - oy2;
 		x2 = (int)rectangle.getWidth() + x1;
 		y2 = (int)rectangle.getHeight() + y1;
-		moveAnchor(x, y);
+		moveAnchor();
 		ox2 = x;
 		oy2 = y;
 	}

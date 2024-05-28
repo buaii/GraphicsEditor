@@ -1,5 +1,6 @@
 package frames;
 
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
@@ -102,11 +103,12 @@ public class GDrawingPanel extends JPanel {
 	
 	private void stopDrawing(int x, int y) {
 		currentShape.draw(getGraphics());
-		shapes.add(currentShape.clone());
+		GShape shape = currentShape.clone();
+		shape.setSelected(getGraphics(), x, y);
+		shapes.add(shape);
 		setDB();
 	}
 	
-	@SuppressWarnings("unused")
 	private GShape onShape(int x, int y) {
 		for (GShape shape : this.shapes) {
 			boolean isOnShape = shape.onShape(x,y);
@@ -134,12 +136,7 @@ public class GDrawingPanel extends JPanel {
 		onClicked.move(x, y);
 		onClicked.draw(getGraphics());
 		setDB();
-	}
-	
-	private void onAnchor() {
-		onClicked.onAnchor();
-		setDB();		
-		onClicked.drag(getGraphics(), dbGraphics, doubleBuffering);
+		
 	}
 	
 	private void offAnchor() {
@@ -147,6 +144,16 @@ public class GDrawingPanel extends JPanel {
 			shape.offAnchor();
 		}
 	}
+	
+	private void changeCursor(int x, int y) {
+		GShape shape = this.onShape(x, y);
+		if (shape == null) {
+			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		} else {
+			this.setCursor(shape.getCursor());
+		}
+	}
+	
 	private class MouseEventHandler implements MouseListener, MouseMotionListener {		
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -163,7 +170,7 @@ public class GDrawingPanel extends JPanel {
 					// eTransformation = ETransformation.
 					startMoving(e.getX(), e.getY());
 					eDrawingState = EDrawingState.eTransformation;
-					onAnchor();
+					onClicked.setSelected(getGraphics(), e.getX(), e.getY());
 				}
 			}
 		}
@@ -222,7 +229,9 @@ public class GDrawingPanel extends JPanel {
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			if (eDrawingState == EDrawingState.eNPState) {
+			if (eDrawingState == EDrawingState.eIdle) {
+				changeCursor(e.getX(), e.getY());
+			} else if (eDrawingState == EDrawingState.eNPState) {
 				keepDrawing(e.getX(), e.getY());
 				eDrawingState = EDrawingState.eNPState;
 			}

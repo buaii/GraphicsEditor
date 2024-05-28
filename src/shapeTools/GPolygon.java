@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath; 
 
@@ -70,47 +71,12 @@ public class GPolygon extends GNPShape {
 		ox2 = x;
 		oy2 = y;		
 	}
-
-	@Override
-	public boolean onShape(int x, int y) {
-		Polygon polygon = (Polygon)this.shape;
-		
-		int minX = polygon.xpoints[0];
-		int maxX = polygon.xpoints[0];
-
-        for (int i = 1; i < polygon.xpoints.length; i++) {
-            if (polygon.xpoints[i] < minX) {
-                minX = polygon.xpoints[i];
-            }
-            if (polygon.xpoints[i] > maxX) {
-                maxX = polygon.xpoints[i];
-            }
-        }
-        
-		int minY = polygon.ypoints[0];
-		int maxY = polygon.ypoints[0];
-
-        for (int i = 1; i < polygon.ypoints.length; i++) {
-            if (polygon.ypoints[i] < minY) {
-                minY = polygon.ypoints[i];
-            }
-            if (polygon.ypoints[i] > maxY) {
-                maxY = polygon.ypoints[i];
-            }
-        }
-        
-		return minX < x && x < maxX && minY < y && y < maxY;
-	}
-	
 	
 	@Override
 	public void move(int x, int y) {
 		Polygon polygon = (Polygon)this.shape;
-		for (int i = 0; i < polygon.npoints; i++) {
-			polygon.xpoints[i] += x - ox2;
-			polygon.ypoints[i] += y - oy2;
-		}
-		moveAnchor(x, y);
+		polygon.translate(x-ox2, y-oy2);
+		moveAnchor();
 		ox2 = x;
 		oy2 = y;
 		
