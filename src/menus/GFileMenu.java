@@ -66,27 +66,32 @@ public class GFileMenu extends JMenu {
             this.drawingPanel.setShape(object);
             in.close();
             fileIn.close();
-            this.paint(getGraphics());
+            this.drawingPanel.setDB();
+            this.drawingPanel.paint(getGraphics());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return;
         }
 	}
 	
+	public void clear() {
+		this.drawingPanel.clear();
+	}
 	
 	public class MenuActionHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			EFileMenuItem eFileMenu = EFileMenuItem.valueOf(e.getActionCommand());
-			if (eFileMenu.ordinal() == 1) {
+			if (eFileMenu.ordinal() == 0) {
+				clear();
+			} else if (eFileMenu.ordinal() == 1) {
 				try {
 					open();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}
-			else if (eFileMenu.ordinal() == 2) {
+			} else if (eFileMenu.ordinal() == 2) {
 				try {
 					save();
 				} catch (IOException e1) {

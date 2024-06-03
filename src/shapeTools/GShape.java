@@ -8,7 +8,11 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 
 public abstract class GShape implements Serializable {
@@ -24,18 +28,12 @@ public abstract class GShape implements Serializable {
 		return this.eDrawingStyle; 
 	}
 	
-	public enum EAnchor {
-		eMove,
-		eResize,
-		eRotate
-	}
-	
 	// int x[], int y[];
 	protected Shape shape;
 	protected boolean onAnchor = false;
-	protected Rectangle box;
-	
-	protected enum EAnchors {
+	protected boolean xflip = false;
+	protected boolean yflip = false;
+	public enum EAnchors {
 		eRR(new Cursor(Cursor.HAND_CURSOR)),
 		eNN(new Cursor(Cursor.N_RESIZE_CURSOR)),
 		eSS(new Cursor(Cursor.S_RESIZE_CURSOR)),
@@ -56,11 +54,16 @@ public abstract class GShape implements Serializable {
 		}
 	}
 	
-	private EAnchors eSelectedAnchor;
+	protected EAnchors eSelectedAnchor;
 	
+	protected double sx, sy;
+	protected double dx, dy;
+	protected double rx, ry = 0;
+	protected double previousAngle;
+	protected double accumulatedAngle;
 	protected Ellipse2D.Float[] anchors;
 	protected int x1, y1, x2, y2, ox2, oy2;
-	protected boolean onClicked = false;
+	protected boolean onClicked;
 	// setters and getters
 	public void setSelected(Graphics graphics, int x, int y) {
 		Graphics2D graphics2D = (Graphics2D) graphics;
@@ -84,8 +87,9 @@ public abstract class GShape implements Serializable {
 		this.eDrawingStyle = eDrawingStyle;
 		this.shape = shape;
 		this.anchors = null;
-		this.eSelectedAnchor = null;
-		this.box = shape.getBounds();
+		this.eSelectedAnchor = EAnchors.eSE;
+		this.onClicked = true; 
+		this.previousAngle = 0;
 		
 		this.x1 = 0;
 		this.y1 = 0;
@@ -127,6 +131,7 @@ public abstract class GShape implements Serializable {
 			this.anchors[EAnchors.eNE.ordinal()] = new Ellipse2D.Float(x+w-ANCHOR_WIDTH/2, y-ANCHOR_HEIGHT/2, ANCHOR_WIDTH, ANCHOR_HEIGHT);
 			this.anchors[EAnchors.eSE.ordinal()] = new Ellipse2D.Float(x+w-ANCHOR_WIDTH/2, y+h-ANCHOR_HEIGHT/2, ANCHOR_WIDTH, ANCHOR_HEIGHT);
 			
+			
 			// draw boundary box
 			Stroke originalStroke = graphics2D.getStroke();
 			graphics2D.setColor(Color.GRAY);
@@ -140,7 +145,7 @@ public abstract class GShape implements Serializable {
 			graphics2D.setStroke(originalStroke);
 			// draw anchors
 			for (Ellipse2D.Float anchor : this.anchors) {
-				graphics2D.setColor(Color.WHITE);
+				graphics2D.setColor(Color.BLUE);
 	        	graphics2D.fill(anchor);
 	        	graphics2D.setColor(Color.BLACK);
 	        	graphics2D.draw(anchor);
@@ -149,7 +154,7 @@ public abstract class GShape implements Serializable {
 	}
 	
 	public boolean onShape(int x, int y) {
-		this.eSelectedAnchor = null;
+		this.eSelectedAnchor = EAnchors.eSE;
 		if (this.anchors != null) {
 			for (int i = 0; i < EAnchors.values().length-1; i++) {
 				if (anchors[i].contains(x, y)) {
@@ -171,8 +176,23 @@ public abstract class GShape implements Serializable {
 	public abstract void addPoint(int x2, int y2);
 	
 	public abstract void startMove(int x, int y);
-	public abstract void move(int x, int y);
+	public void move(int x, int y) {
+		Rectangle rectangle = (Rectangle)this.shape.getBounds();
+		x1 = (int)rectangle.getX() + x - ox2;
+		y1 = (int)rectangle.getY() + y - oy2;
+		x2 = (int)rectangle.getWidth() + x1;
+		y2 = (int)rectangle.getHeight() + y1;
 		
+		int dx = x - ox2;
+		int dy = y - oy2;
+		AffineTransform affineTransform = new AffineTransform();
+		affineTransform.setToTranslation(dx, dy);
+		this.shape = affineTransform.createTransformedShape(this.shape);
+		
+		ox2 = x;
+		oy2 = y;
+	}
+	
 	public void moveAnchor() {
 		if (onClicked) {
 			Rectangle rectangle = this.shape.getBounds();
@@ -197,5 +217,156 @@ public abstract class GShape implements Serializable {
 
 	public void offAnchor() {
 		this.onClicked = false;
+	}
+
+	public void startResize(int x, int y) {
+		this.ox2 = x2;
+		this.oy2 = y2;
+		this.x2 = x;
+		this.y2 = y;
+	}
+	
+	private Point2D getResizeFactor() {
+		sx = 1;
+		sy = 1;
+		dx = 0;
+		dy = 0;
+		double cx = 0;
+		double cy = 0;
+		double w = this.shape.getBounds().getWidth();
+		double h = this.shape.getBounds().getHeight();
+		
+		switch(this.eSelectedAnchor) {
+		case eNW:
+			cx = this.anchors[EAnchors.eSE.ordinal()].getCenterX();
+			cy = this.anchors[EAnchors.eSE.ordinal()].getCenterY();
+			sx = (w+ox2-x2)/w;
+			dx = cx - cx * sx;
+			sy = (h+oy2-y2)/h;
+			dy = cy - cy * sy;
+			break;
+		case eSE:
+			cx = this.anchors[EAnchors.eNW.ordinal()].getCenterX();
+			cy = this.anchors[EAnchors.eNW.ordinal()].getCenterY();
+			sx = (w+x2-ox2)/w;
+			dx = cx - cx * sx;
+			sy = (h+y2-oy2)/h;
+			dy = cy - cy * sy;
+			break;
+		case eEE:
+			cx = this.anchors[EAnchors.eWW.ordinal()].getCenterX();
+			sx = (w+x2-ox2)/w;
+			dx = cx - cx * sx;
+			break;
+		case eWW:
+			cx = this.anchors[EAnchors.eEE.ordinal()].getCenterX();
+			sx = (w+ox2-x2)/w;
+			dx = cx - cx * sx;
+			break;
+		case eSS:
+			cy = this.anchors[EAnchors.eNN.ordinal()].getCenterY();
+			sy = (h+y2-oy2)/h; 
+			dy = cy - cy * sy;
+			break;
+		case eNN: 
+			cy = this.anchors[EAnchors.eSS.ordinal()].getCenterY();
+			sy = (h+oy2-y2)/h;
+			dy = cy - cy * sy;
+			break;
+		case eSW:
+			cx = this.anchors[EAnchors.eNE.ordinal()].getCenterX();
+			cy = this.anchors[EAnchors.eNE.ordinal()].getCenterY();
+			sx = (w+ox2-x2)/w;
+			dx = cx - cx * sx;
+			sy = (h+y2-oy2)/h;
+			dy = cy - cy * sy;
+			break;
+		case eNE:
+			cx = this.anchors[EAnchors.eSW.ordinal()].getCenterX();
+			cy = this.anchors[EAnchors.eSW.ordinal()].getCenterY();
+			sx = (w+x2-ox2)/w;
+			dx = cx - cx * sx;
+			sy = (h+oy2-y2)/h;
+			dy = cy - cy * sy;
+			break;
+		default:
+			break;
+		
+		}
+		return new Point2D.Double(sx, sy);
+	}
+	
+	public void keepResize(int x, int y, boolean bool) {
+		if (Math.abs(x-x2) > 1 && Math.abs(y-y2) > 1) {
+			this.ox2 = x2;
+			this.oy2 = y2;
+			this.x2 = x;
+			this.y2 = y;
+			
+			
+			Point2D resizeFactor = getResizeFactor();
+			AffineTransform affineTransform = new AffineTransform();
+		
+			affineTransform.setToScale(resizeFactor.getX(), resizeFactor.getY());
+			this.shape = affineTransform.createTransformedShape(this.shape);
+			AffineTransform affineTransform2 = new AffineTransform();
+			affineTransform2.setToTranslation(dx, dy);
+			this.shape = affineTransform2.createTransformedShape(this.shape);
+		}
+	}
+
+	public void stopResize(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void startRotate(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private double getRotateFactor(int x, int y) {
+        double centerX = this.anchors[EAnchors.eRR.ordinal()].getCenterX();
+        double centerY = this.anchors[EAnchors.eRR.ordinal()].getCenterY();
+        if (rx == 0 || ry == 0) {
+        	rx = this.anchors[EAnchors.eRR.ordinal()].getCenterX();
+            ry = this.anchors[EAnchors.eRR.ordinal()].getCenterY();
+        } 
+        
+        double v1X = rx - centerX;
+        double v1Y = ry - centerY;
+        double v2X = x - centerX;
+        double v2Y = y - centerY;
+        
+        double angle1 = Math.atan2(v1Y, v1X);
+        double angle2 = Math.atan2(v2Y, v2X);
+        
+        double angleDiff = angle2 - angle1;
+        if (angleDiff < 0) {
+            angleDiff += 2 * Math.PI;
+        }
+        rx = x;
+        ry = y;
+        return angleDiff;
+	}
+	
+	public void keepRotate(int x, int y) {
+	    double angleDiff = getRotateFactor(x, y);
+	    
+	    Rectangle2D bounds = this.shape.getBounds2D();
+	    double centerX = bounds.getCenterX();
+	    double centerY = bounds.getCenterY();
+	    
+	    double rotationAngle = Math.toDegrees(angleDiff);
+	    
+	    AffineTransform affineTransform = new AffineTransform();
+	    affineTransform.rotate(Math.toRadians(rotationAngle), centerX, centerY);
+	    
+	    this.shape = affineTransform.createTransformedShape(this.shape);
+	}
+
+	public void stopRotate(int x, int y) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -2,6 +2,7 @@ package frames;
 
 import java.awt.Cursor;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -11,6 +12,7 @@ import java.util.Vector;
 import javax.swing.JPanel;
 
 import shapeTools.GShape;
+import shapeTools.GShape.EAnchors;
 import shapeTools.GShape.EDrawingStyle;
 
 public class GDrawingPanel extends JPanel {
@@ -58,6 +60,12 @@ public class GDrawingPanel extends JPanel {
 		this.dbGraphics = this.doubleBuffering.getGraphics();
 	}	
 	
+	public void clear() {
+		this.shapes = new Vector<GShape>();
+		this.setDB();
+		this.paint(getGraphics());
+	}
+	
 	// setters and getters
 	public void setDB() {
 		this.initialize();
@@ -89,10 +97,11 @@ public class GDrawingPanel extends JPanel {
 	private void startDrawing(int x, int y) {
 		currentShape = shapeTool.clone();
 		currentShape.setOrigin(x, y);
+		currentShape.drawAnchors((Graphics2D)getGraphics());
 	}
 	
 	private void keepDrawing(int x, int y) {
-		currentShape.movePoint(x, y);
+		currentShape.keepResize(x, y, false);
 		setDB();
 		currentShape.drag(getGraphics(), dbGraphics, doubleBuffering);
 	}
@@ -103,9 +112,8 @@ public class GDrawingPanel extends JPanel {
 	
 	private void stopDrawing(int x, int y) {
 		currentShape.draw(getGraphics());
-		GShape shape = currentShape.clone();
-		shape.setSelected(getGraphics(), x, y);
-		shapes.add(shape);
+		currentShape.setSelected(getGraphics(), x, y);
+		shapes.add(currentShape);
 		setDB();
 	}
 	
@@ -153,6 +161,11 @@ public class GDrawingPanel extends JPanel {
 			this.setCursor(shape.getCursor());
 		}
 	}
+
+	public void startRotate(int x, int y) {
+		
+		
+	}  
 	
 	private class MouseEventHandler implements MouseListener, MouseMotionListener {		
 		@Override
@@ -160,17 +173,24 @@ public class GDrawingPanel extends JPanel {
 			if (eDrawingState == EDrawingState.eIdle) {
 				onClicked = onShape(e.getX(), e.getY());
 				if (onClicked == null) {
+					offAnchor();
 					if (shapeTool.getEDrawingStyle() == EDrawingStyle.e2PStyle) {
 						startDrawing(e.getX(), e.getY());
 						eDrawingState = EDrawingState.e2PState;
-						offAnchor();
 					}
 				} else {
-					// transformation					
-					// eTransformation = ETransformation.
-					startMoving(e.getX(), e.getY());
+					if (onClicked.getSelectedAnchor() == EAnchors.eMM) {
+						// move
+						startMoving(e.getX(), e.getY());
+						onClicked.setSelected(getGraphics(), e.getX(), e.getY());
+					} else if (onClicked.getSelectedAnchor() == EAnchors.eRR) {
+						// rotate
+						onClicked.startRotate(e.getX(), e.getY());
+					} else {
+						// resize
+						onClicked.startResize(e.getX(), e.getY());
+					}
 					eDrawingState = EDrawingState.eTransformation;
-					onClicked.setSelected(getGraphics(), e.getX(), e.getY());
 				}
 			}
 		}
@@ -180,7 +200,20 @@ public class GDrawingPanel extends JPanel {
 			if (eDrawingState == EDrawingState.e2PState) {
 				keepDrawing(e.getX(), e.getY());
 			} else if (eDrawingState == EDrawingState.eTransformation) {
-				keepMoving(e.getX(), e.getY());
+				if (onClicked.getSelectedAnchor() == EAnchors.eMM) {
+					// move
+					keepMoving(e.getX(), e.getY());
+				} else if (onClicked.getSelectedAnchor() == EAnchors.eRR) {
+					// rotate
+					onClicked.keepRotate(e.getX(), e.getY());
+					setDB();
+					onClicked.drag(getGraphics(), dbGraphics, doubleBuffering);
+				} else {
+					// resize
+					onClicked.keepResize(e.getX(), e.getY(), true);
+					setDB();
+					onClicked.drag(getGraphics(), dbGraphics, doubleBuffering);
+				}
 			}			
 		}
 		
@@ -190,7 +223,16 @@ public class GDrawingPanel extends JPanel {
 				stopDrawing(e.getX(), e.getY());
 				eDrawingState = EDrawingState.eIdle;
 			} else if (eDrawingState == EDrawingState.eTransformation) {
-				stopMoving(e.getX(), e.getY());
+				if (onClicked.getSelectedAnchor() == EAnchors.eMM) {
+					// move
+					stopMoving(e.getX(), e.getY());
+				} else if (onClicked.getSelectedAnchor() == EAnchors.eRR) {
+					// rotate
+					onClicked.stopRotate(e.getX(), e.getY());
+				} else {
+					// resize
+					onClicked.stopResize(e.getX(), e.getY());
+				}
 				eDrawingState = EDrawingState.eIdle;
 			} 
 		}
@@ -243,5 +285,5 @@ public class GDrawingPanel extends JPanel {
 		@Override
 		public void mouseExited(MouseEvent e) {}
 		
-	}  
+	}
 }
