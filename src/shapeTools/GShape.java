@@ -10,7 +10,6 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
@@ -30,9 +29,7 @@ public abstract class GShape implements Serializable {
 	
 	// int x[], int y[];
 	protected Shape shape;
-	protected boolean onAnchor = false;
-	protected boolean xflip = false;
-	protected boolean yflip = false;
+	
 	public enum EAnchors {
 		eRR(new Cursor(Cursor.HAND_CURSOR)),
 		eNN(new Cursor(Cursor.N_RESIZE_CURSOR)),
@@ -62,6 +59,8 @@ public abstract class GShape implements Serializable {
 	protected double previousAngle;
 	protected double accumulatedAngle;
 	protected Ellipse2D.Float[] anchors;
+	protected Color fillColor;
+	protected Color lineColor;
 	protected int x1, y1, x2, y2, ox2, oy2;
 	protected boolean onClicked;
 	// setters and getters
@@ -90,6 +89,8 @@ public abstract class GShape implements Serializable {
 		this.eSelectedAnchor = EAnchors.eSE;
 		this.onClicked = true; 
 		this.previousAngle = 0;
+		this.fillColor = new Color(0, 0, 0, 0);
+		this.lineColor = Color.BLACK;
 		
 		this.x1 = 0;
 		this.y1 = 0;
@@ -103,6 +104,9 @@ public abstract class GShape implements Serializable {
 	
 	public void draw(Graphics g) {
 		Graphics2D graphics2D = (Graphics2D) g;
+		graphics2D.setColor(fillColor);
+		graphics2D.fill(shape);
+		graphics2D.setColor(lineColor);
 		graphics2D.draw(shape);
 		if (this.anchors != null) {
 			drawAnchors(graphics2D);
@@ -145,12 +149,24 @@ public abstract class GShape implements Serializable {
 			graphics2D.setStroke(originalStroke);
 			// draw anchors
 			for (Ellipse2D.Float anchor : this.anchors) {
-				graphics2D.setColor(Color.BLUE);
+				graphics2D.setColor(Color.WHITE);
 	        	graphics2D.fill(anchor);
 	        	graphics2D.setColor(Color.BLACK);
 	        	graphics2D.draw(anchor);
 			}
 		}
+	}
+	
+	public void setFillColor(Color color) {
+		if (onClicked) {
+			this.fillColor = color;
+		}		 
+	}
+	
+	public void setLineColor(Color color) {
+		if (onClicked) {
+			this.lineColor = color;
+		} 
 	}
 	
 	public boolean onShape(int x, int y) {

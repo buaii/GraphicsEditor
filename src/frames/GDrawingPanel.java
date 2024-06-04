@@ -1,5 +1,6 @@
 package frames;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -9,8 +10,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Vector;
 
+import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 
+import global.Constants.EColorButtons;
 import shapeTools.GShape;
 import shapeTools.GShape.EAnchors;
 import shapeTools.GShape.EDrawingStyle;
@@ -74,6 +77,21 @@ public class GDrawingPanel extends JPanel {
 	
 	public void setShapeTool(GShape shapeTool) {
 		this.shapeTool = shapeTool;		
+	}
+	
+	public void setColor(String string) {
+		if (string == EColorButtons.eFillColor.getText()) {
+			Color selectedColor = JColorChooser.showDialog(null, "Choose Fill color", Color.BLACK);
+			for (GShape g : shapes) {
+				g.setFillColor(selectedColor);
+			}
+		} else {
+			Color selectedColor = JColorChooser.showDialog(null, "Choose Line color", Color.BLACK);
+			for (GShape g : shapes) {
+				g.setLineColor(selectedColor);
+			}
+		}
+		repaint();
 	}
 	
 	public Vector<GShape> getShape() {

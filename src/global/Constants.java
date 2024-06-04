@@ -28,6 +28,19 @@ public class Constants {
 		
 	}
 	
+	public enum EColorButtons {
+		eFillColor("FillColor"),
+		eLineColor("LineColor");
+		
+		private String text;
+		private EColorButtons(String text){
+			this.text = text;
+		}
+		
+		public String getText() { return this.text; }		
+	}
+	
+	
 	public static final int NUM_POINTS = 20;
 	
 	public static class GMainFrame {
