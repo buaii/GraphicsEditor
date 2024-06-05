@@ -8,3 +8,13 @@
 * Oval
 * Line
 * Polygon
+
+# Func
+* Move ( Translation )
+* Resize ( Scale )
+* Rotate
+* Copy
+* Delete
+* Set Fill/Line Color
+* Save/Save As
+* Open
