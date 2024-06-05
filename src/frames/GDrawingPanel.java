@@ -4,10 +4,11 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JColorChooser;
@@ -29,21 +30,13 @@ public class GDrawingPanel extends JPanel {
 	}
 	private EDrawingState eDrawingState;
 	
-//	private enum ETransformation {
-//		eDraw,
-//		eMove,
-//		eResize,
-//		eRotate
-//	}
-//	private ETransformation eTransformation;
-	
 	// components
 	private Vector<GShape> shapes;
 	private GShape shapeTool;
 	private GShape currentShape;
 	private GShape onClicked;
-	private Image doubleBuffering;
-	private Graphics dbGraphics;
+	private BufferedImage doubleBuffering;
+	private Graphics2D dbGraphics;
 	
 	// constructors
 	public GDrawingPanel() {
@@ -59,8 +52,11 @@ public class GDrawingPanel extends JPanel {
 	}
 	
 	public void initialize() {
-		this.doubleBuffering = createImage(getWidth(), getHeight());
-		this.dbGraphics = this.doubleBuffering.getGraphics();
+		this.doubleBuffering = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+		this.dbGraphics = (Graphics2D) this.doubleBuffering.getGraphics();
+		this.dbGraphics.setColor(getForeground());
+		this.dbGraphics.setBackground(getBackground());
+		this.dbGraphics.clearRect(0, 0, getWidth(), getHeight());
 	}	
 	
 	public void clear() {
@@ -79,19 +75,39 @@ public class GDrawingPanel extends JPanel {
 		this.shapeTool = shapeTool;		
 	}
 	
-	public void setColor(String string) {
+	public void setColor(String string) throws CloneNotSupportedException {
 		if (string == EColorButtons.eFillColor.getText()) {
 			Color selectedColor = JColorChooser.showDialog(null, "Choose Fill color", Color.BLACK);
 			for (GShape g : shapes) {
 				g.setFillColor(selectedColor);
 			}
-		} else {
+		} else if (string == EColorButtons.eLineColor.getText()){
 			Color selectedColor = JColorChooser.showDialog(null, "Choose Line color", Color.BLACK);
 			for (GShape g : shapes) {
 				g.setLineColor(selectedColor);
 			}
+		} else if (string == EColorButtons.eCopy.getText()){
+			Vector<GShape> vg = new Vector<GShape>();
+			for (GShape g : shapes) {
+				GShape temp = g.copy();
+				if (temp != null) {
+					vg.add(temp);
+				}				
+			}
+			this.shapes.addAll(vg);
+		} else {
+	       synchronized (shapes) {
+	            Iterator<GShape> iterator = shapes.iterator();
+	            while (iterator.hasNext()) {
+	                GShape shape = iterator.next();
+	                if (shape.isSelected()) {
+	                    iterator.remove();
+	                }
+	            }
+	        }
 		}
-		repaint();
+		setDB();
+		paint(getGraphics());
 	}
 	
 	public Vector<GShape> getShape() {

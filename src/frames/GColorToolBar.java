@@ -33,7 +33,7 @@ public class GColorToolBar extends JToolBar {
 		this.drawingPanel = drawingPanel;
 	}
 	
-	private void setColor(EColorButtons eColorButton) {
+	private void setColor(EColorButtons eColorButton) throws CloneNotSupportedException {
 		this.drawingPanel.setColor(eColorButton.getText());
 	}
 	
@@ -41,7 +41,12 @@ public class GColorToolBar extends JToolBar {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			EColorButtons eColorButton = EColorButtons.valueOf(e.getActionCommand());
-			setColor(eColorButton);
+			try {
+				setColor(eColorButton);
+			} catch (CloneNotSupportedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 }

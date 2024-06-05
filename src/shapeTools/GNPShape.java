@@ -1,8 +1,8 @@
 package shapeTools;
 
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Shape;
+import java.awt.image.BufferedImage;
 
 public abstract class GNPShape extends GShape {
 	private static final long serialVersionUID = 1L;
@@ -35,7 +35,7 @@ public abstract class GNPShape extends GShape {
 	}
 
 	@Override
-	public void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering) {
+	public void drag(Graphics g, Graphics dbGraphics, BufferedImage doubleBuffering) {
 		
 	}
 	

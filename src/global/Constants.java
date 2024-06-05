@@ -30,7 +30,9 @@ public class Constants {
 	
 	public enum EColorButtons {
 		eFillColor("FillColor"),
-		eLineColor("LineColor");
+		eLineColor("LineColor"),
+		eCopy("Copy"),
+		eDelete("Delete");
 		
 		private String text;
 		private EColorButtons(String text){

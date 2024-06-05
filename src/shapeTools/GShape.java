@@ -1,10 +1,10 @@
 package shapeTools;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -12,9 +12,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
-public abstract class GShape implements Serializable {
+public abstract class GShape implements Serializable, Cloneable {
 	private static final long serialVersionUID = 1L;
 	
 	public enum EDrawingStyle {
@@ -27,7 +28,6 @@ public abstract class GShape implements Serializable {
 		return this.eDrawingStyle; 
 	}
 	
-	// int x[], int y[];
 	protected Shape shape;
 	
 	public enum EAnchors {
@@ -102,6 +102,18 @@ public abstract class GShape implements Serializable {
 	public GShape() {}
 	public abstract GShape clone();
 	
+	public GShape copy() throws CloneNotSupportedException {
+		if (onClicked) {
+			GShape clone = (GShape)super.clone();
+			AffineTransform affineTransform = new AffineTransform();
+			affineTransform.setToTranslation(50, 50);
+			clone.shape = affineTransform.createTransformedShape(clone.shape);
+			return clone;
+		} else {
+			return null;
+		}
+	}
+	
 	public void draw(Graphics g) {
 		Graphics2D graphics2D = (Graphics2D) g;
 		graphics2D.setColor(fillColor);
@@ -113,7 +125,7 @@ public abstract class GShape implements Serializable {
 		} 
 	}
 	
-	public abstract void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering);
+	public abstract void drag(Graphics g, Graphics dbGraphics, BufferedImage doubleBuffering);
 	
 	public void drawAnchors(Graphics2D graphics2D) {
 		if (onClicked) {
@@ -384,5 +396,9 @@ public abstract class GShape implements Serializable {
 	public void stopRotate(int x, int y) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public boolean isSelected() {
+		return onClicked;
 	}
 }

@@ -2,10 +2,10 @@ package shapeTools;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 public abstract class G2PShape extends GShape {
 	private static final long serialVersionUID = 1L;
@@ -15,7 +15,7 @@ public abstract class G2PShape extends GShape {
 	}
 	
 	@Override
-	public void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering) {
+	public void drag(Graphics g, Graphics dbGraphics, BufferedImage doubleBuffering) {
 		Graphics2D graphics2D = (Graphics2D) dbGraphics;
 		graphics2D.draw(this.shape);
 		g.drawImage(doubleBuffering, 0, 0, null);

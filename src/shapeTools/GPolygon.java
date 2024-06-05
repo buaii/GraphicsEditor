@@ -1,11 +1,12 @@
 package shapeTools;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Path2D; 
+import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage; 
 
 public class GPolygon extends GNPShape {	
 	private static final long serialVersionUID = 1L;
@@ -39,7 +40,7 @@ public class GPolygon extends GNPShape {
 	}
 
 	@Override
-	public void drag(Graphics g, Graphics dbGraphics, Image doubleBuffering) {
+	public void drag(Graphics g, Graphics dbGraphics, BufferedImage doubleBuffering) {
 		Graphics2D graphics2D = (Graphics2D) dbGraphics;
 		if (shape instanceof Path2D) {
 			// do nothing
